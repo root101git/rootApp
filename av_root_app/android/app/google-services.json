@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "408249445144",
+    "firebase_url": "https://av-root-23-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "av-root-23",
+    "storage_bucket": "av-root-23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408249445144:android:c8d8a069b3459294148c6d",
+        "android_client_info": {
+          "package_name": "com.example.av_root_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmdLLHyphvWN_q0PNN9nDFcmru-dHdhuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
