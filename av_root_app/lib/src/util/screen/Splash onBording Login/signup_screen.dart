@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-import '../../util/screen/navigation_menu.dart';
-import '../../util/widgets/UI helper/uphelper.dart';
+import '../../widgets/UI helper/uphelper.dart';
+import '../navigation_menu.dart';
 
 
 class SignUpScreen extends StatefulWidget {

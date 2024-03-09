@@ -53,6 +53,8 @@ dependencies:
   connectivity_plus: ^5.0.2
   dotted_border: ^2.1.0
   google_sign_in: ^6.2.1
+  get_storage: ^2.1.1
+  flutter_native_splash: ^2.2.16
 
 
 flutter_icons:

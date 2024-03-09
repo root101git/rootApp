@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
-import '../../authentication/login_signup/loginscreen.dart';
 import 'Scan/scanscreen.dart';
 
 class NavigationMenu extends StatelessWidget {
@@ -43,7 +42,7 @@ class NavigationController extends GetxController {
     HomeScreen(),
     StoreScreen(),
     ScannerScreen(),
-    BookMarkScreen(),
+    BookmarkScreen(),
     SettingScreen()
   ];
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:av_root_app/src/component/text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,16 +22,13 @@ class _ScannerScreenState extends State<ScannerScreen> {
   File? _image;
   final picker = ImagePicker();
   var imageResponse;
-  var er ;
-  String apiUrl = 'http://192.168.113.42:8080/predict';
-
-  // firebase_storage.FirebaseStorage storage =
-  //     firebase_storage.FirebaseStorage.instance;
-  // DatabaseReference databaseref = FirebaseDatabase.instance.ref('post');
+  var er;
+  String apiUrl = 'http://192.168.87.42:8080/predict';
+  var collection = FirebaseFirestore.instance.collection("data_plants");
 
   Future getImagegallery() async {
     final pickedFile =
-    await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
 
     setState(() {
       if (pickedFile != null) {
@@ -43,7 +41,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
   Future getImageCamera() async {
     final pickedFile =
-    await picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 80);
 
     setState(() {
       if (pickedFile != null) {
@@ -72,15 +70,13 @@ class _ScannerScreenState extends State<ScannerScreen> {
         print('Image sent successfully');
         // Optionally, you can parse and process the response data here
         var responseData = await response.stream.bytesToString();
-        print('Response: $responseData');
+        print('Response: $responseData["name"]');
         setState(() {
           if (responseData != null) {
             imageResponse = responseData;
-          }
-          else{
+          } else {
             print("Erorr respons");
           }
-
         });
       } else {
         // Request failed
@@ -90,13 +86,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
       setState(() {
         er = e;
       });
-
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var isDark  = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -113,32 +108,35 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   },
                   child: _image != null
                       ? Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Image.file(_image!.absolute),
-                  )
+                          padding: const EdgeInsets.all(18.0),
+                          child: Image.file(_image!.absolute),
+                        )
                       : DottedBorder(
-                        borderType: BorderType.Rect,
-                        strokeWidth:4 ,
-                        dashPattern: [6,5],
-                        radius: Radius.circular(50),
-                        padding: EdgeInsets.all(8),
-                        child: Container(
-                          height: 200,
-                          child:Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                             Icon(Iconsax.camera,size: 70,),
-                              Text(
-                                "Tap to select image",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                          borderType: BorderType.Rect,
+                          strokeWidth: 4,
+                          dashPattern: [6, 5],
+                          radius: Radius.circular(50),
+                          padding: EdgeInsets.all(8),
+                          child: Container(
+                            height: 200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(
+                                  Iconsax.camera,
+                                  size: 70,
                                 ),
-                              )
-                        ],
-                                        ),
-                                      ),
-                      ),
+                                Text(
+                                  "Tap to select image",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -148,82 +146,91 @@ class _ScannerScreenState extends State<ScannerScreen> {
                       getImagegallery();
                     },
                     child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 80, vertical: 5),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 80, vertical: 5),
                       child: Text(
                         "Uplode image",
                         style: TextStyle(
-        
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     )),
-        
               ],
             ),
           ),
         ),
       ),
-      bottomNavigationBar:  ElevatedButton(
-            onPressed: () async {
-              print("scan image clik");
+      floatingActionButton: ElevatedButton(
+        onPressed: () async {
+          print("Process image ");
+          if (_image != null) {
+            print("Image => ${_image}");
+            await sendImage(_image!, apiUrl);
 
-              print(_image);
-              await sendImage(_image!, apiUrl);
-
-              if ( await imageResponse != null) {
-                showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text("Predict Plant ",),
-                    content:  Text(imageResponse,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(100),color: Colors.green[50],),
-                          padding: const EdgeInsets.all(14),
-                          child: const Text("okay",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }else{
-                // print("imageRespons nhi mila \n fir se kar");
-                Fluttertoast.showToast(msg: er.toString(),toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                    fontSize: 16.0);
+            if (await imageResponse != null) {
+              var data = await collection.where("plant_name",
+                  isEqualTo: imageResponse["name"].toString());
+              if (imageResponse == data) {
+                print("image resposce is equla to thaha dplant data ");
+              } else {
+                print("image resposce is not  equla to thaha dplant data ");
               }
 
-              // // File imageFile = File(_image!);
-              // // Check if the image file exists
-              // if (await _image.exists()) {
-              //   // Call the sendImage function with the image file
-              //   await sendImage(_image!, apiUrl);
-              // } else {
-              //   print('Image file does not exist');
-              // }
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children:  [
-                Icon(Iconsax.scanner5, color: Colors.green),
-                SizedBox(width: 20,),
-                Text(
-                  "Process Image ",
-                  style: TextStyle(
-                      color:isDark? HexColor(RWhiteColor): HexColor(RMidnightBlueColor),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            )),
-
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return SizedBox(
+                      height: MediaQuery.of(context).size.height / 2,
+                      width: MediaQuery.of(context).size.height,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "${imageResponse}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      ));
+                },
+              );
+            } else {
+              // print("imageRespons nhi mila \n fir se kar");
+              Fluttertoast.showToast(
+                  msg: er.toString(),
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            }
+          } else {
+            print("image no select");
+            Fluttertoast.showToast(
+                msg: " image no select \n please select image",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);
+          }
+        },
+        child: Container(
+          child: Text(
+            "Process Image ",
+            style: TextStyle(
+                color: isDark
+                    ? HexColor(RWhiteColor)
+                    : HexColor(RMidnightBlueColor),
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
     );
   }
 }

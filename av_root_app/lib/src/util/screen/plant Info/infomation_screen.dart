@@ -75,7 +75,6 @@ class _IinformationScreenState extends State<IinformationScreen> {
                     subtitle: Text(document['medicinal_prop'],maxLines: 1,),
                     titleTextStyle: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: isDark? HexColor(RBlackColor):HexColor(RMidnightBlueColor)),
                     subtitleTextStyle: TextStyle(color: Colors.black),
-                    trailing: Icon(FontAwesomeIcons.heart),
                     minVerticalPadding: 10,
                     onTap: (){
                       print(document['plant_name']);
