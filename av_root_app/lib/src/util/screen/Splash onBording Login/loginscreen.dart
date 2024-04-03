@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 MaterialPageRoute(
                   builder: (context) => NavigationMenu(),
                 )));
+        print("logedin \n dashbord");
       } on FirebaseAuthException catch (e) {
         return UiHlper.CoustomAlertBox(context, e.code.toString());
       }
