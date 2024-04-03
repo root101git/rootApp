@@ -23,3 +23,10 @@ String plant2 ="assets/plant/p2.png";
 String plant3 ="assets/plant/p3.png";
 String plant4 ="assets/plant/p4.png";
 String plant5 ="assets/plant/p5.png";
+String UserIcon ="assets/user.png";
+String SPlashIcon ="assets/logo1.png";
+
+String onBoardingIMG1 = "assets/onBoarding/plant.gif";
+String onBoardingIMG2 = "assets/onBoarding/plnat2.gif";
+String onBoardingIMG3 = "assets/onBoarding/plant3.gif";
+

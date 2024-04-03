@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:av_root_app/src/component/text.dart';
 import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/loginscreen.dart';
 import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/onbording_screen.dart';
 import 'package:av_root_app/src/util/screen/navigation_menu.dart';
@@ -38,14 +39,14 @@ class SplashScreenState extends State<SplashScreen> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => OnBordingScreen(),
+                builder: (context) => LoginScreen(),
               ));
         }
       } else {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => LoginScreen(),
+              builder: (context) =>OnBordingScreen (),
             ));
       }
     });
@@ -54,7 +55,7 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("Splash Sccreen")),
+      body: Center(child: Image(image: AssetImage(SPlashIcon),)),
     );
   }
 }

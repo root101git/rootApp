@@ -101,8 +101,8 @@ class _SettingScreenState extends State<SettingScreen> {
                         child: Container(color: HexColor(RGreenColor),
                           child: _image != null
                               ? Image.file(_image!.absolute,fit: BoxFit.cover,): Image(
-                            image: AssetImage("assets/user.png"),
-                            // fit: BoxFit.cover,
+                            image: AssetImage(UserIcon),
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),

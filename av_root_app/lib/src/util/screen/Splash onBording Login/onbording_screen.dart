@@ -1,27 +1,47 @@
-import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/loginscreen.dart';
+import 'package:av_root_app/src/component/text.dart';
+import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/widgets/onboardingdotnavigation.dart';
+import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/widgets/onboardingnext.dart';
+import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/widgets/onboardingskip.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import '../../../Coontroller/onboardingcontroller.dart';
+import 'widgets/onboardingpage.dart';
 
-class OnBordingScreen extends StatefulWidget {
+class OnBordingScreen extends StatelessWidget {
   const OnBordingScreen({super.key});
 
   @override
-  State<OnBordingScreen> createState() => _OnBordingScreenState();
-}
-
-class _OnBordingScreenState extends State<OnBordingScreen> {
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(OnBoardingController());
+
     return Scaffold(
-      body: Center(
-        child: Text(
-            "OnBording Sccreen"
+        body: Stack(
+      children: [
+        PageView(
+          controller: controller.pageController,
+          onPageChanged: controller.updatePageIndicator,
+          children: [
+            OnBoardingPage(
+              title: 'Welcome to Plantify!',
+              subTitle: 'Your plant identification companion',
+              image: onBoardingIMG1,
+            ),
+            OnBoardingPage(
+              title: 'Discover Plants!',
+              subTitle: 'Identify and learn about plants around you',
+              image: onBoardingIMG2,
+            ),
+            OnBoardingPage(
+              title: 'Get Started!',
+              subTitle: 'Begin exploring the world of plants',
+              image: onBoardingIMG3,
+            ),
+          ],
         ),
-      ),
-      floatingActionButton: ElevatedButton(onPressed: (){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
-      },
-      child: Icon(FontAwesomeIcons.arrowRight ,color: Colors.black,),),
-    );
+        onBoardingSkip(),
+        OnBoardingDotNavigation(),
+        OnBoardingNext()
+      ],
+    ));
   }
 }

@@ -1,6 +1,9 @@
+
+
 import 'package:av_root_app/src/component/text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class UiHlper {
@@ -45,6 +48,7 @@ class UiHlper {
       ),
     );
   }
+
 
 
 }

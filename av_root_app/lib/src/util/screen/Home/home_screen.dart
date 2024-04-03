@@ -61,7 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
                 children: [
-                  Container(child: SearchBoxWidgets()),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SearchBoxWidgets(),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -111,6 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-        ));
+        )
+    );
   }
 }
