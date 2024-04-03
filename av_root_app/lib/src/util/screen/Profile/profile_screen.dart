@@ -1,13 +1,16 @@
 
 import 'dart:io';
 import 'package:av_root_app/src/component/text.dart';
+import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../page/contect_us_page.dart';
 import '../../page/edit_profile_page.dart';
 import '../../widgets/Text/text_wedgets.dart';
+import '../Splash onBording Login/splash_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -93,12 +96,13 @@ class _SettingScreenState extends State<SettingScreen> {
                     SizedBox(
                       width: 100,
                       height: 100,
-                      child: ClipRRect(
+                      child: ClipRRect (
                         borderRadius: BorderRadius.circular(100),
                         child: Container(color: HexColor(RGreenColor),
                           child: _image != null
-                              ? Image.file(_image!.absolute): Image(
-                            image: AssetImage(plant2),
+                              ? Image.file(_image!.absolute,fit: BoxFit.cover,): Image(
+                            image: AssetImage("assets/user.png"),
+                            // fit: BoxFit.cover,
                           ),
                         ),
                       ),
@@ -239,7 +243,11 @@ class _SettingScreenState extends State<SettingScreen> {
                   TextStyle(fontSize: 18, fontWeight: FontWeight.bold ,color: Colors.red),
                 ),
                 leading: CircleAvatar(backgroundColor: Colors.deepOrange[200],child: Icon(Iconsax.logout,size: 28,)),
-
+                onTap: () async {
+                  var sharedPreferene = await SharedPreferences.getInstance();
+                  sharedPreferene.setBool(SplashScreenState.KEYLOGIN, false);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                },
               )
               ,
               Divider( thickness: 0.5),

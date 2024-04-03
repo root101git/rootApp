@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:av_root_app/src/component/text.dart';
+import 'package:av_root_app/src/util/widgets/UI%20helper/uphelper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,7 +24,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   final picker = ImagePicker();
   var imageResponse;
   var er;
-  String apiUrl = 'http://192.168.87.42:8080/predict';
+  String apiUrl = 'http://192.168.148.147:8080/predict';
   var collection = FirebaseFirestore.instance.collection("data_plants");
 
   Future getImagegallery() async {
@@ -95,11 +96,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: EdgeInsets.all(50),
           child: Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 InkWell(
@@ -108,23 +109,30 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   },
                   child: _image != null
                       ? Padding(
-                          padding: const EdgeInsets.all(18.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Image.file(_image!.absolute),
                         )
                       : DottedBorder(
                           borderType: BorderType.Rect,
                           strokeWidth: 4,
                           dashPattern: [6, 5],
+                          color: isDark
+                              ? HexColor(RWhiteColor)
+                              : HexColor(RBlackColor),
                           radius: Radius.circular(50),
                           padding: EdgeInsets.all(8),
                           child: Container(
-                            height: 200,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 60, vertical: 120),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Icon(
                                   Iconsax.camera,
                                   size: 70,
+                                ),
+                                SizedBox(
+                                  height: 30,
                                 ),
                                 Text(
                                   "Tap to select image",
@@ -139,98 +147,163 @@ class _ScannerScreenState extends State<ScannerScreen> {
                         ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 60,
                 ),
+                UiHlper.RoundButton("Uplode image", () {
+                  getImagegallery();
+                }),
+
                 ElevatedButton(
-                    onPressed: () {
-                      getImagegallery();
-                    },
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 80, vertical: 5),
-                      child: Text(
-                        "Uplode image",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    )),
+                  onPressed: () async {
+                    print("Process image ");
+                    if (_image != null) {
+                      print("Image => ${_image}");
+                      await sendImage(_image!, apiUrl);
+
+                      if (await imageResponse != null) {
+                        // var data = await collection.where("plant_name",
+                        //     isEqualTo: imageResponse["name"].toString()).get();
+                        // if (imageResponse == data) {
+                        //   print("image resposce is equla to thaha dplant data ");
+                        // } else {
+                        //   print("image resposce is not  equla to thaha dplant data ");
+                        // }
+
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return SizedBox(
+                                height: MediaQuery.of(context).size.height / 2,
+                                width: MediaQuery.of(context).size.height,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "${imageResponse}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold, fontSize: 20),
+                                      ),
+                                    ],
+                                  ),
+                                ));
+                          },
+                        );
+                      } else {
+                        // print("imageRespons nhi mila \n fir se kar");
+                        Fluttertoast.showToast(
+                            msg: er.toString(),
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                      }
+                    } else {
+                      print("image no select");
+                      Fluttertoast.showToast(
+                          msg: " image no select \n please select image",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.TOP,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    }
+                  },
+                  child: Text(
+                    "Process Image ",
+                    style: TextStyle(
+                        color: isDark
+                            ? HexColor(RMidnightBlueColor)
+                            : HexColor(RMidnightBlueColor),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateColor.resolveWith(
+                              (states) => HexColor(RGreenColor))),
+                ),
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () async {
-          print("Process image ");
-          if (_image != null) {
-            print("Image => ${_image}");
-            await sendImage(_image!, apiUrl);
-
-            if (await imageResponse != null) {
-              var data = await collection.where("plant_name",
-                  isEqualTo: imageResponse["name"].toString());
-              if (imageResponse == data) {
-                print("image resposce is equla to thaha dplant data ");
-              } else {
-                print("image resposce is not  equla to thaha dplant data ");
-              }
-
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return SizedBox(
-                      height: MediaQuery.of(context).size.height / 2,
-                      width: MediaQuery.of(context).size.height,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${imageResponse}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                          ],
-                        ),
-                      ));
-                },
-              );
-            } else {
-              // print("imageRespons nhi mila \n fir se kar");
-              Fluttertoast.showToast(
-                  msg: er.toString(),
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            }
-          } else {
-            print("image no select");
-            Fluttertoast.showToast(
-                msg: " image no select \n please select image",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
-          }
-        },
-        child: Container(
-          child: Text(
-            "Process Image ",
-            style: TextStyle(
-                color: isDark
-                    ? HexColor(RWhiteColor)
-                    : HexColor(RMidnightBlueColor),
-                fontSize: 20,
-                fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
+      // floatingActionButton: ElevatedButton(
+      //   onPressed: () async {
+      //     print("Process image ");
+      //     if (_image != null) {
+      //       print("Image => ${_image}");
+      //       await sendImage(_image!, apiUrl);
+      //
+      //       if (await imageResponse != null) {
+      //         // var data = await collection.where("plant_name",
+      //         //     isEqualTo: imageResponse["name"].toString()).get();
+      //         // if (imageResponse == data) {
+      //         //   print("image resposce is equla to thaha dplant data ");
+      //         // } else {
+      //         //   print("image resposce is not  equla to thaha dplant data ");
+      //         // }
+      //
+      //         showModalBottomSheet(
+      //           context: context,
+      //           builder: (context) {
+      //             return SizedBox(
+      //                 height: MediaQuery.of(context).size.height / 2,
+      //                 width: MediaQuery.of(context).size.height,
+      //                 child: Padding(
+      //                   padding: const EdgeInsets.all(8.0),
+      //                   child: Column(
+      //                     crossAxisAlignment: CrossAxisAlignment.center,
+      //                     children: [
+      //                       Text(
+      //                         "${imageResponse}",
+      //                         style: TextStyle(
+      //                             fontWeight: FontWeight.bold, fontSize: 20),
+      //                       ),
+      //                     ],
+      //                   ),
+      //                 ));
+      //           },
+      //         );
+      //       } else {
+      //         // print("imageRespons nhi mila \n fir se kar");
+      //         Fluttertoast.showToast(
+      //             msg: er.toString(),
+      //             toastLength: Toast.LENGTH_SHORT,
+      //             gravity: ToastGravity.CENTER,
+      //             timeInSecForIosWeb: 1,
+      //             backgroundColor: Colors.red,
+      //             textColor: Colors.white,
+      //             fontSize: 16.0);
+      //       }
+      //     } else {
+      //       print("image no select");
+      //       Fluttertoast.showToast(
+      //           msg: " image no select \n please select image",
+      //           toastLength: Toast.LENGTH_SHORT,
+      //           gravity: ToastGravity.TOP,
+      //           timeInSecForIosWeb: 1,
+      //           backgroundColor: Colors.red,
+      //           textColor: Colors.white,
+      //           fontSize: 16.0);
+      //     }
+      //   },
+      //   child: Text(
+      //     "Process Image ",
+      //     style: TextStyle(
+      //         color: isDark
+      //             ? HexColor(RMidnightBlueColor)
+      //             : HexColor(RMidnightBlueColor),
+      //         fontSize: 20,
+      //         fontWeight: FontWeight.bold),
+      //   ),
+      //   style: ButtonStyle(
+      //       backgroundColor: MaterialStateColor.resolveWith(
+      //           (states) => HexColor(RGreenColor))),
+      // ),
     );
   }
 }

@@ -62,7 +62,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 color: isDark? HexColor(RgreenGaryColor): HexColor(RGreenColor),
                 shadowColor: HexColor(RGreenColor),
                 child: ListTile(
-                  leading: CircleAvatar(child: Image(image: NetworkImage(document['plant_image']),)),
+                  leading: ClipRRect(borderRadius: BorderRadius.circular(20) , child: Image( height:60 ,width:70 ,fit: BoxFit.cover ,image: NetworkImage(document['plant_image']),)),
                   title: Text(document['plant_name'],maxLines: 1,),
                   subtitle: Text(document['plant_medicanalProp'],maxLines: 1,),
                   titleTextStyle: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: isDark? HexColor(RBlackColor):HexColor(RMidnightBlueColor)),

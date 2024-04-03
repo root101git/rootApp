@@ -15,9 +15,9 @@ class RecentListContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
+    return Card(
       child: Container(
+        width: 200,
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
             border: Border.all(width: 1.5),
@@ -29,15 +29,18 @@ class RecentListContainer extends StatelessWidget {
             Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color:isDark? HexColor(RgreenGaryColor): HexColor(RGreenColor)),
+                    color:isDark? HexColor(RgreenGaryColor): HexColor(RGreenColor),
+                  image: DecorationImage(image: NetworkImage(imageURl),fit: BoxFit.cover)
+                ),
                 padding: EdgeInsets.all(8),
-                child: Image(
-                  image: AssetImage(imageURl),
-                  height: 110,
-                )),
+              height: 130,
+
+            ),
             Text(
               plantName,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              maxLines: 1,
+      
             ),
           ],
         ),

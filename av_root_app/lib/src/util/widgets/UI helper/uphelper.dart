@@ -1,5 +1,7 @@
+import 'package:av_root_app/src/component/text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class UiHlper {
 
@@ -11,8 +13,11 @@ class UiHlper {
       decoration: InputDecoration(
         hintText: text,
         suffixIcon: Icon(iconData),
+
       ),
+
     );
+
   }
 
 
@@ -23,4 +28,23 @@ class UiHlper {
       );
     },);
   }
+
+  static RoundButton(String title, VoidCallback onTap ,){
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 50,
+        width: 300,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: HexColor(RgreenGaryColor),
+          borderRadius: BorderRadius.circular(20)
+
+        ),
+        child: Text(title,style: TextStyle(color: Colors.black,fontSize: 22,fontWeight: FontWeight.bold),),
+      ),
+    );
+  }
+
+
 }

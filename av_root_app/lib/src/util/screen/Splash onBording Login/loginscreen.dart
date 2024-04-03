@@ -1,11 +1,14 @@
 import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/signup_screen.dart';
+import 'package:av_root_app/src/util/screen/Splash%20onBording%20Login/splash_screen.dart';
 import 'package:av_root_app/src/util/widgets/UI%20helper/uphelper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../navigation_menu.dart';
 
@@ -26,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password)
-            .then((value) => Navigator.push(
+            .then((value) => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => NavigationMenu(),
@@ -50,14 +53,20 @@ class _LoginScreenState extends State<LoginScreen> {
         await FirebaseAuth.instance.signInWithCredential(credential);
 
     print(userCredential.user?.displayName);
+
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NavigationMenu(),
+        ));
   }
 
-  setInitialScreen(User? user) {
-    user == null
-        ? Get.offAll(() => SignUpScreen())
-        : user.emailVerified
-            ? Get.offAll(() => LoginScreen())
-            : Get.offAll(() => NavigationMenu());
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _userMailController.dispose();
+    _passwordController.dispose();
   }
 
   @override
@@ -81,11 +90,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     Iconsax.password_check, true),
                 SizedBox(height: 20),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       print("\n\n\n\n Login button \n\n\n\n  ");
-
                       login(_userMailController.text.toString(),
                           _passwordController.text.toString());
+                      var sharedPreferene =
+                          await SharedPreferences.getInstance();
+                      sharedPreferene.setBool(SplashScreenState.KEYLOGIN, true);
+
+
                     },
                     child: Text("login")),
                 Row(
@@ -93,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text("i don't have account"),
                     TextButton(
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => SignUpScreen(),
@@ -103,8 +116,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       loginWithGoogle();
+                      var sharedPreferene =
+                          await SharedPreferences.getInstance();
+                      sharedPreferene.setBool(SplashScreenState.KEYLOGIN, true);
                     },
                     child: Icon(FontAwesomeIcons.google))
               ],
